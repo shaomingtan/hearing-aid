@@ -1,0 +1,28 @@
+<script>
+  function hasGetUserMedia() {
+    return !!(navigator.mediaDevices &&
+      navigator.mediaDevices.getUserMedia);
+  }
+
+  function streamAudio() {
+    var aCtx;
+    var analyser;
+    var microphone;
+    if (navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({audio: true}, function(stream) {
+            aCtx = new webkitAudioContext();
+            analyser = aCtx.createAnalyser();
+            microphone = aCtx.createMediaStreamSource(stream);
+            microphone.connect(analyser);
+            analyser.connect(aCtx.destination);
+        });
+    };
+  }
+
+  if (hasGetUserMedia()) {
+    console.log('Got media')
+    streamAudio()
+  } else {
+    alert('getUserMedia() is not supported by your browser');
+  }
+</script>
