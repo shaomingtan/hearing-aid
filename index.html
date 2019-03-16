@@ -10,7 +10,7 @@
     var microphone;
     if (navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({audio: true}, function(stream) {
-            aCtx = new webkitAudioContext();
+            aCtx = new (window.AudioContext || window.webkitAudioContext)
             analyser = aCtx.createAnalyser();
             microphone = aCtx.createMediaStreamSource(stream);
             microphone.connect(analyser);
