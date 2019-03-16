@@ -1,28 +1,32 @@
-<script>
-  function hasGetUserMedia() {
-    return !!(navigator.mediaDevices &&
-      navigator.mediaDevices.getUserMedia);
-  }
+<html>
+  <body>
+    <button id='button'>start</button>
+    <script>
+      function hasGetUserMedia() {
+        return !!(navigator.mediaDevices &&
+          navigator.mediaDevices.getUserMedia);
+      }
 
-  function streamAudio() {
-    if (navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices.getUserMedia({audio: true}, function(stream) {
-        const context = new (window.AudioContext || window.webkitAudioContext),
-          result = {
-            amplify: function(multiplier) { result.gain.gain.value = multiplier; },
-          };
-        const analyser = context.createAnalyser();
-        const microphone = context.createMediaStreamSource(stream);
-        microphone.connect(analyser);
-        analyser.connect(context.destination);
-      });
-    };
-  }
+      function StreamAudiov() {
+        const aCtx = new AudioContext();
+        navigator.mediaDevices.getUserMedia({audio: true}).then(function (stream) {
+          const microphone = aCtx.createMediaStreamSource(stream);
+          microphone.connect(aCtx.destination);
+        })
 
-  if (hasGetUserMedia()) {
-    console.log('Got media')
-    streamAudio()
-  } else {
-    alert('getUserMedia() is not supported by your browser');
-  }
-</script>
+        // One-liner to resume playback when user interacted with the page.
+        document.querySelector('#button').addEventListener('click', function() {
+          aCtx.resume().then(() => {
+            console.log('Playback resumed successfully');
+          });
+        });
+      }
+
+      if (hasGetUserMedia()) {
+        StreamAudiov()
+      } else {
+        alert('getUserMedia() is not supported by your browser');
+      }
+    </script>
+  </body>
+</html>
