@@ -5,17 +5,17 @@
   }
 
   function streamAudio() {
-    var aCtx;
-    var analyser;
-    var microphone;
     if (navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({audio: true}, function(stream) {
-            aCtx = new (window.AudioContext || window.webkitAudioContext)
-            analyser = aCtx.createAnalyser();
-            microphone = aCtx.createMediaStreamSource(stream);
-            microphone.connect(analyser);
-            analyser.connect(aCtx.destination);
-        });
+      navigator.mediaDevices.getUserMedia({audio: true}, function(stream) {
+        const context = new (window.AudioContext || window.webkitAudioContext),
+          result = {
+            amplify: function(multiplier) { result.gain.gain.value = multiplier; },
+          };
+        const analyser = context.createAnalyser();
+        const microphone = context.createMediaStreamSource(stream);
+        microphone.connect(analyser);
+        analyser.connect(context.destination);
+      });
     };
   }
 
